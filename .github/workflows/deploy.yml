@@ -1,0 +1,60 @@
+
+name: Deploy to GoDaddy Server
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build project
+      run: npm run build
+      
+    - name: Deploy to server
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          # Aller dans le répertoire du site
+          cd /var/www/lesvoixduchoeur
+          
+          # Sauvegarder l'ancienne version
+          sudo cp -r dist dist_backup_$(date +%Y%m%d_%H%M%S)
+          
+          # Cloner ou mettre à jour le repo
+          if [ ! -d ".git" ]; then
+            sudo git clone https://github.com/${{ github.repository }} .
+          else
+            sudo git fetch origin
+            sudo git reset --hard origin/main
+          fi
+          
+          # Installer les dépendances et builder
+          sudo npm ci
+          sudo npm run build
+          
+          # Redémarrer nginx si nécessaire
+          sudo systemctl reload nginx
+          
+          echo "Deployment completed successfully!"
