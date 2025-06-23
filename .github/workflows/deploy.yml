@@ -1,16 +1,13 @@
-
-name: Deploy to GoDaddy Server
+name: Deploy to GoDaddy via FTP
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
     branches: [ main, master ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -27,34 +24,21 @@ jobs:
     - name: Build project
       run: npm run build
       
-    - name: Deploy to server
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-      uses: appleboy/ssh-action@v1.0.0
+    - name: Deploy to GoDaddy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USER }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        port: ${{ secrets.SERVER_PORT }}
-        script: |
-          # Aller dans le répertoire du site
-          cd /var/www/lesvoixduchoeur
-          
-          # Sauvegarder l'ancienne version
-          sudo cp -r dist dist_backup_$(date +%Y%m%d_%H%M%S)
-          
-          # Cloner ou mettre à jour le repo
-          if [ ! -d ".git" ]; then
-            sudo git clone https://github.com/${{ github.repository }} .
-          else
-            sudo git fetch origin
-            sudo git reset --hard origin/main
-          fi
-          
-          # Installer les dépendances et builder
-          sudo npm ci
-          sudo npm run build
-          
-          # Redémarrer nginx si nécessaire
-          sudo systemctl reload nginx
-          
-          echo "Deployment completed successfully!"
+        server: ftp.lesvoixduchoeur.ca
+        username: id_rsa
+        password: accesPOURloaderLESfichiers
+        local-dir: ./dist/
+        server-dir: /public_html/
+        exclude: |
+          **/.git*
+          **/node_modules/**
+          .github/
+          README.md
+          *.log
+          .env*
+        log-level: verbose
+        timeout: 600000
+        port: 21
