@@ -27,9 +27,9 @@ jobs:
     - name: Deploy to GoDaddy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ftp.lesvoixduchoeur.ca
-        username: id_rsa
-        password: accesPOURloaderLESfichiers
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
         local-dir: ./dist/
         server-dir: /public_html/
         exclude: |
