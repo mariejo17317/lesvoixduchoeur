@@ -10,7 +10,7 @@ const AboutSection = () => {
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="order-2 md:order-1">
               <p className="text-choir-cream font-lato mb-6 leading-relaxed">
-                Petite histoire... <span className="text-choir-gold"></span> </p>
+                LA Petite histoire... <span className="text-choir-gold"></span> </p>
             <p className="text-choir-cream font-lato mb-6 leading-relaxed">Ce groupe, fondé en 2007, est né du désir de Gilles Proulx et de Diane Boudreau de créer un groupe avec une couleur différente et un son plus actuel. C'est ainsi, en janvier 2008, après une période de recrutement que le groupe a vraiment pris son envol.
 Gilles Proulx a débuté l'étude du piano à l'âge de 6 ans et on lui reconnaît alors une oreille presque absolue.  Sa professeure de piano, madame Odette Lebel, s'amusait à l'appeler "son p'tit Mozart".  Par la suite, il a chanté quelques années dans la chorale de son église le dimanche, pour ensuite en devenir l'organiste à temps plein, et ce, de 12 à 22 ans approximativement.
               </p>
