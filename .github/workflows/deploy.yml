@@ -35,6 +35,12 @@ jobs:
         echo "FTP_USERNAME = $FTP_USERNAME"
         echo "FTP_PASSWORD is set" # ne pas afficher le mot de passe !
 
+        - name: 🔍 Test ping FTP server
+  run: |
+    echo "Trying to resolve $FTP_SERVER"
+    ping -c 3 $FTP_SERVER || true
+
+
     - name: 🚀 Deploy to GoDaddy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
