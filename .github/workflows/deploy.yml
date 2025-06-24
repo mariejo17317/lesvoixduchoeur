@@ -14,32 +14,31 @@ jobs:
       FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
 
     steps:
-    - name: Checkout repository
+    - name: 🧾 Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
+    - name: ⚙️ Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
 
-    - name: Install dependencies
+    - name: 📦 Install dependencies
       run: npm ci
 
-    - name: Build project
+    - name: 🛠️ Build project
       run: npm run build
 
-    - name: ✅ Debug – Confirm env values
+    - name: ✅ Debug – Confirmer que les secrets sont présents
       run: |
         echo "FTP_SERVER = $FTP_SERVER"
         echo "FTP_USERNAME = $FTP_USERNAME"
-        echo "FTP_PASSWORD is set" # ne pas afficher le mot de passe !
+        echo "FTP_PASSWORD is set"
 
-        - name: 🔍 Test ping FTP server
-  run: |
-    echo "Trying to resolve $FTP_SERVER"
-    ping -c 3 $FTP_SERVER || true
-
+    - name: 🔍 Test ping FTP server
+      run: |
+        echo "Trying to resolve $FTP_SERVER"
+        ping -c 3 $FTP_SERVER || true
 
     - name: 🚀 Deploy to GoDaddy via FTP
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
